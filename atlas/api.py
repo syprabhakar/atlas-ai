@@ -3,12 +3,18 @@ from functools import lru_cache
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 from .core import AtlasRAG
+from atlas.agent.routes import router as agent_router
 import logging
+
+
+
+
 
 logger = logging.getLogger(__name__)
 
 
 app = FastAPI(title="ATLAS AI", version="0.1.0")
+app.include_router(agent_router)
 
 @lru_cache(maxsize=1)
 def engine() -> AtlasRAG:

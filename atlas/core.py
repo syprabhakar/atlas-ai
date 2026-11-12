@@ -47,7 +47,12 @@ class AtlasRAG:
         self.root = Path(data_dir or os.getenv("ATLAS_DATA_DIR", "./data"))
         self.root.mkdir(parents=True, exist_ok=True)
         self.lock = threading.RLock()
-        self.client = chromadb.PersistentClient(path=str(self.root / "chroma"))
+        self.client = chromadb.PersistentClient(
+    path=str(self.root / "chroma"),
+    settings=chromadb.Settings(
+        anonymized_telemetry=False
+    ),
+)
         self.collection = self.client.get_or_create_collection("atlas_chunks", metadata={"hnsw:space": "cosine"})
         self._embedder = None
         self._reranker = None
