@@ -1,0 +1,38 @@
+
+[
+  {
+    "id": "calc_001",
+    "category": "tool_selection",
+    "question": "Use the calculator to calculate 12500 * 18 / 100",
+    "expected_tool": "calculator",
+    "expected_answer": "2250"
+  },
+  {
+    "id": "calc_002",
+    "category": "tool_selection",
+    "question": "What is 144 divided by 12? Use the calculator.",
+    "expected_tool": "calculator",
+    "expected_answer": "12"
+  },
+  {
+    "id": "rag_001",
+    "category": "rag",
+    "question": "What are the three WCAG conformance levels? Search the documents.",
+    "expected_tool": "search_documents",
+    "expected_answer": "A, AA, AAA"
+  },
+  {
+    "id": "rag_002",
+    "category": "rag",
+    "question": "Explain the purpose of WCAG guidelines using the uploaded documents.",
+    "expected_tool": "search_documents",
+    "expected_answer": "Web accessibility"
+  },
+  {
+    "id": "approval_001",
+    "category": "human_approval",
+    "question": "Create a compliance ticket titled Missing alt text with description Important images lack alternative text.",
+    "expected_tool": "create_ticket",
+    "expected_status": "approval_required"
+  }
+]

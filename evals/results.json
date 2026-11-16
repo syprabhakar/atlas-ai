@@ -1,0 +1,52 @@
+[
+  {
+    "id": "calc_001",
+    "expected_tool": "calculator",
+    "actual_tools": [
+      "calculator"
+    ],
+    "tool_passed": true,
+    "status_passed": true,
+    "passed": true
+  },
+  {
+    "id": "calc_002",
+    "expected_tool": "calculator",
+    "actual_tools": [
+      "calculator"
+    ],
+    "tool_passed": true,
+    "status_passed": true,
+    "passed": true
+  },
+  {
+    "id": "rag_001",
+    "expected_tool": "search_documents",
+    "actual_tools": [
+      "search_documents"
+    ],
+    "tool_passed": true,
+    "status_passed": true,
+    "passed": true
+  },
+  {
+    "id": "rag_002",
+    "expected_tool": "search_documents",
+    "actual_tools": [
+      "search_documents"
+    ],
+    "tool_passed": true,
+    "status_passed": true,
+    "passed": true
+  },
+  {
+    "id": "approval_001",
+    "expected_tool": "create_ticket",
+    "actual_tools": [
+      "create_ticket"
+    ],
+    "tool_passed": true,
+    "status_passed": true,
+    "passed": true
+  }
+]

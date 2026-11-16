@@ -1,0 +1,48 @@
+[
+  {
+    "thread_id": "trace-138bac2f-253c-4f7a-895c-8bb88b4cfcc4",
+    "question": "Use the calculator to calculate 12500 * 18 / 100",
+    "nodes": [
+      "agent",
+      "ordinary_tools",
+      "agent"
+    ],
+    "tool_calls": [
+      {
+        "name": "calculator",
+        "args": {
+          "expression": "(12500 * 18) / 100"
+        }
+      }
+    ],
+    "input_tokens": 482,
+    "output_tokens": 50,
+    "total_tokens": 532,
+    "latency_seconds": 3.991,
+    "status": "completed",
+    "answer": "The result of the calculation \\( 12500 \\times 18 \\div 100 \\) is 2250.0."
+  },
+  {
+    "thread_id": "trace-bb42223e-d52a-4bd1-b4d7-7b81c99aecd4",
+    "question": "Search the documents for the three WCAG conformance levels.",
+    "nodes": [
+      "agent",
+      "ordinary_tools",
+      "agent"
+    ],
+    "tool_calls": [
+      {
+        "name": "search_documents",
+        "args": {
+          "query": "WCAG conformance levels"
+        }
+      }
+    ],
+    "input_tokens": 1309,
+    "output_tokens": 189,
+    "total_tokens": 1498,
+    "latency_seconds": 15.226,
+    "status": "completed",
+    "answer": "The three WCAG (Web Content Accessibility Guidelines) conformance levels are:\n\n1. **Level A** (Bronze) - This is the minimum conformance level, which includes basic requirements such as providing alternative text for images. However, it is rarely sufficient on its own.\n\n2. **Level AA** - This is the target level for legal standards and industry practices. It includes requirements such as a minimum contrast ratio of 4.5:1 for normal text and full keyboard support.\n\n3. **Level AAA** (Gold) - This is the highest conformance level, which includes more stringent requirements, such as a contrast ratio of 7:1. However, it is often considered impractical for many web applications and is applied selectively.\n\nLevel AA is generally regarded as the standard that balances rigor with practicality for web accessibility [1]."
+  }
+]

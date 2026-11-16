@@ -1,0 +1,39 @@
+[
+  {
+    "question": "What are the three WCAG conformance levels?",
+    "precision_at_k": 0.4,
+    "context_coverage": 1.0,
+    "retrieved_count": 5,
+    "chunk_relevance": [
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    "fact_coverage": [
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "question": "What are the four WCAG POUR principles?",
+    "precision_at_k": 0.4,
+    "context_coverage": 1.0,
+    "retrieved_count": 5,
+    "chunk_relevance": [
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    "fact_coverage": [
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+]
