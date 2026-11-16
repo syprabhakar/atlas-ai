@@ -1,6 +1,7 @@
 
 """FastAPI routes for the ATLAS AI agent."""
 
+import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage
@@ -8,6 +9,8 @@ from langgraph.types import Command
 
 from atlas.agent.runtime import get_agent
 
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/agent", tags=["Agent"])
 
@@ -59,14 +62,17 @@ def chat(request: ChatRequest):
             detail="This conversation has a pending workflow.",
         )
 
-    result = graph.invoke(
-        {
-            "messages": [
-                HumanMessage(content=request.message)
-            ]
-        },
-        config=config,
-    )
+    try:
+        result = graph.invoke(
+            {"messages": [HumanMessage(content=request.message)]},
+            config=config,
+        )
+    except Exception as exc:
+        logger.exception("Agent chat failed")
+        raise HTTPException(
+            503,
+            "Agent execution failed; see server logs."
+        ) from exc
 
     return format_result(result)
 
@@ -84,10 +90,17 @@ def approve(request: ApprovalRequest):
             detail="No pending approval exists.",
         )
 
-    result = graph.invoke(
-        Command(resume=request.approved),
-        config=config,
-    )
+    try:
+        result = graph.invoke(
+            Command(resume=request.approved),
+            config=config
+        )
+    except Exception as exc:
+        logger.exception("Agent approval resume failed")
+        raise HTTPException(
+            503,
+            "Workflow resume failed; see server logs."
+        ) from exc
 
     return format_result(result)
 

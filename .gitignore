@@ -1,8 +1,10 @@
+
 # Environment and secrets
 .env
 .env.*
 !.env.example
 .venv/
+data/
 
 # Local application data
 data/
@@ -20,4 +22,12 @@ __pycache__/
 # macOS
 .DS_Store
 
+# Generated evaluation outputs
 evals/rag_results.json
+evals/results.json
+evals/retrieval_results.json
+evals/traces.json
+
+# Coverage
+.coverage
+htmlcov/

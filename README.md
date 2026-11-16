@@ -1,53 +1,174 @@
-# ATLAS AI — Day 1
 
-A runnable Python 3.12 modular-monolith enterprise RAG prototype: FastAPI + Streamlit, PDF parsing, Chroma persistence, BM25, semantic search, reciprocal rank fusion, cross-encoder reranking, cited LLM answers.
+# ATLAS AI — Agentic RAG Portfolio Project
 
-## Requirements
-- Python 3.12; internet for first model downloads
-- CPU is sufficient; first embedding/reranker downloads take time
-- Text-based PDFs only on Day 1; OCR is planned for Day 5
+ATLAS AI is a local development prototype combining document-grounded question answering with a LangGraph agent, calculator, and approval-gated mock ticket creation.
 
-## Setup
+Built with Python 3.12, FastAPI, Streamlit, Chroma, BM25, SentenceTransformers, LangGraph, and OpenAI.
+
+## Architecture
+
+```text
+                 Streamlit UI
+                      |
+                   FastAPI
+                 /         \
+          Document API    Agent API
+                |             |
+             AtlasRAG      LangGraph
+                |         /    |    \
+           PDF ingestion  RAG  Calc  Ticket
+                |                     |
+        Chroma + BM25              Approval
+                |                     |
+               RRF               SQLite state
+                |
+         Cross-Encoder
+                |
+          Cited answers
+```
+
+## Features
+
+- PDF ingestion and persistent Chroma embeddings
+- BM25 lexical search and semantic vector retrieval
+- Reciprocal Rank Fusion (RRF)
+- Cross-encoder reranking
+- Grounded answers with source citations
+- LangGraph agent with document search and calculator tools
+- SQLite-backed conversation checkpoints
+- Human approval before mock ticket creation
+- Unified Streamlit interface
+- Agent evaluation, retrieval evaluation, and execution tracing
+
+## Quick Start
+
+Requires Python 3.12.
+
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
 pip install -r requirements.txt
 cp .env.example .env
 ```
 
-On Intel macOS with older CPU/ABI constraints, the pinned `torch==2.2.2`, `numpy==1.26.4`, `transformers==4.44.2`, and `sentence-transformers==2.7.0` are intentional. If pip cannot install PyTorch for your specific OS, use a Python 3.12 Linux container or compatible machine.
+Add your OpenAI API key to `.env`.
 
-Optionally set `OPENAI_API_KEY` in `.env` for generated answers. Without it, ATLAS returns clearly labeled retrieved excerpts. **Never commit `.env`.**
+Start FastAPI:
 
-## Run (two terminals, from repository root)
 ```bash
-source .venv/bin/activate
 uvicorn atlas.api:app --reload
 ```
+
+In a second terminal, start Streamlit:
+
 ```bash
 source .venv/bin/activate
 streamlit run atlas/ui.py
 ```
 
-FastAPI docs: http://127.0.0.1:8000/docs
-Streamlit: http://localhost:8501
+Streamlit:
+http://localhost:8501
 
-## API examples
+API documentation:
+http://127.0.0.1:8000/docs
+
+On first run, embedding and reranking models may need to be downloaded.
+
+## Demo Workflow
+
+1. Upload a public, text-based PDF.
+2. Ask a question about the document.
+3. Inspect the answer and its citations.
+4. Ask the agent to calculate `12500 * 18 / 100`.
+5. Ask the agent to research WCAG conformance levels and prepare a compliance ticket.
+6. Review the proposed ticket.
+7. Approve or reject the action.
+
+Ticket creation is mocked. No external Jira ticket is created.
+
+## API Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| GET /health | Health and indexed chunk count |
+| POST /documents | Ingest a PDF |
+| POST /ask | Document-grounded Q&A |
+| POST /agent/chat | Agent conversation |
+| POST /agent/approve | Resume approval |
+| GET /agent/history/{thread_id} | Conversation history |
+
+## Testing
+
+Run offline tests:
+
 ```bash
-curl -F 'file=@sample.pdf' http://127.0.0.1:8000/documents
-curl -X POST http://127.0.0.1:8000/ask -H 'Content-Type: application/json' -d '{"question":"What does the policy say?","top_k":5}'
+TOKENIZERS_PARALLELISM=false PYTHONPATH=. \
+python -m pytest tests/test_core.py tests/test_workflow_unit.py -v
 ```
 
-## Test
+Run live integration tests:
+
 ```bash
-pytest -q
+TOKENIZERS_PARALLELISM=false PYTHONPATH=. \
+python -m pytest tests/test_agent_regression.py -v
 ```
 
-## Scope and limitations
-- A single-process developer prototype, **not** production-ready. No authentication, per-tenant filtering, upload malware scanning, or concurrency-safe cross-process writes. Do not upload sensitive enterprise documents.
-- BM25 loads all chunks into memory on each query; this is intentionally simple for Day 1 and must be replaced with an indexed keyword engine at scale.
-- Generated citations are prompted, not yet independently validated; Day 4 will add citation faithfulness checks.
-- Extractive fallback returns relevant passages rather than synthesizing answers.
-- PDF tables may parse poorly; OCR and table handling are future work.
-- Model downloads and installation were not validated on your machine.
+Run evaluations:
+
+```bash
+PYTHONPATH=. python -m evals.run_agent_eval
+PYTHONPATH=. python -m evals.run_rag_eval
+PYTHONPATH=. python -m evals.run_retrieval_eval
+PYTHONPATH=. python -m evals.trace_agent
+```
+
+Live evaluations may incur API costs.
+
+## Historical Evaluation Results
+
+Results from a small local test set:
+
+- Agent evaluation: 5/5 cases passed
+- Regression tests: 4/4 passed
+- Retrieval Precision@5: 0.40 on two WCAG queries
+- Required-fact coverage: 1.00 on two WCAG queries
+- Calculator latency: approximately 4 seconds
+- RAG agent latency: approximately 15.5 seconds
+
+These are prototype observations, not production benchmarks.
+
+The LLM-based evaluation scripts use custom judges rather than the official RAGAS implementation.
+
+## Limitations
+
+This is not a production-ready service.
+
+Current limitations include:
+
+- No authentication or tenant isolation
+- No document-level access controls
+- No production-grade retry and timeout strategy
+- No durable external-action idempotency
+- No multiworker-safe checkpoint storage
+- No knowledge graph or long-term semantic memory
+- No real ticketing-system integration
+
+The research-to-ticket sequence is guided by agent instructions, not enforced through a deterministic workflow.
+
+## Security
+
+Do not upload confidential documents.
+
+Never commit `.env`, local data, checkpoint databases, or generated traces containing sensitive content.
+
+## Future Improvements
+
+- Deterministic research-to-ticket workflow
+- External ticketing integration
+- Idempotent tool execution
+- Long-term memory
+- Knowledge graph retrieval
+- Authentication and authorization
+- CI/CD and deployment
+- Larger evaluation datasets
+- Distributed tracing and per-stage latency monitoring
